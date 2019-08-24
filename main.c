@@ -14,6 +14,7 @@ node *insertTreapNode(node *n, node *m);
 node *createNode();
 node *leftRotate(node *n);
 node *rightRotate(node *n);
+void printTree(node *n);
 void printNode(node *n);
 
 //Testing module
@@ -26,9 +27,8 @@ int main(int argc, char **argv)
     node *n = createNode();
     node *m = createNode();
     root = insertTreapNode(root, n);
-    printNode(root);
     insertTreapNode(root, m);
-
+    printTree(root);
     return 0;
 }
 
@@ -41,7 +41,6 @@ node *insertTreapNode(node *n, node *m)
 
     if (m->key <= n->key)
     {
-        printf("left\n");
 
         n->leftchild = insertTreapNode(n->leftchild, m);
 
@@ -52,7 +51,6 @@ node *insertTreapNode(node *n, node *m)
     }
     else
     {
-        printf("right\n");
         n->rightchild = insertTreapNode(n->rightchild, m);
 
         if (n->rightchild->value > n->value)
@@ -90,6 +88,23 @@ node *leftRotate(node *n)
     y->leftchild = n;
     n->rightchild = x;
     return y;
+}
+
+void printTree(node *n)
+{
+    static int i = 0, j;
+    for (j = 0; j < i; j++)
+        printf("   ");
+    if (n == NULL)
+        printf("-\n");
+    else
+    {
+        i++;
+        printf("%c\n", n->key);
+        printTree(n->leftchild);
+        printTree(n->rightchild);
+        i--;
+    }
 }
 
 void printNode(node *n)
