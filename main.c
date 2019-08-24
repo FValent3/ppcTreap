@@ -12,13 +12,15 @@ typedef struct Node
 
 node *insertTreapNode(node *n, node *m);
 node *createNode();
+node *leftRotate(node *n);
+node *rigthRotate(node *n);
 void printNode(node *n);
 
 //Testing module
 int main(int argc, char **argv)
 {
     time_t t;
-    srand( (unsigned) time(&t));
+    srand((unsigned)time(&t));
 
     node *root = NULL;
     node *n = createNode();
@@ -40,12 +42,23 @@ node *insertTreapNode(node *n, node *m)
     if (m->key <= n->key)
     {
         printf("left\n");
+
         n->leftchild = insertTreapNode(n->leftchild, m);
+
+        if (n->leftchild->value > n->value)
+        {
+            n = rigthRotate(n);
+        }
     }
     else
     {
         printf("right\n");
         n->rigthchild = insertTreapNode(n->rigthchild, m);
+
+        if (n->rigthchild->value > n->value)
+        {
+            n = leftRotate(n);
+        }
     }
     return m;
 }
@@ -59,6 +72,24 @@ node *createNode()
     n->leftchild = NULL;
     n->rigthchild = NULL;
     return n;
+}
+
+node *rigthRotate(node *n)
+{
+    node *x = n->leftchild;
+    node *y = n->rigthchild;
+    x->rigthchild = n;
+    n->leftchild = y;
+    return x;
+}
+
+node *leftRotate(node *n)
+{
+    node *y = n->rigthchild;
+    node *x = n->leftchild;
+    y->leftchild = n;
+    n->rigthchild = x;
+    return y;
 }
 
 void printNode(node *n)
