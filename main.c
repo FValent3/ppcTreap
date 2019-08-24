@@ -5,8 +5,8 @@
 
 typedef struct Node
 {
-    char key;
-    int value;
+    long int key;
+    long int value;
     struct Node *leftchild, *rightchild;
 } node;
 
@@ -23,12 +23,13 @@ int main(int argc, char **argv)
     time_t t;
     srand((unsigned)time(&t));
 
-    node *root = NULL;
+    node * root = NULL;
     node *n = createNode();
     node *m = createNode();
     root = insertTreapNode(root, n);
-    insertTreapNode(root, m);
+    root = insertTreapNode(root, m);
     printTree(root);
+    free (root);
     return 0;
 }
 
@@ -36,7 +37,8 @@ node *insertTreapNode(node *n, node *m)
 {
     if (!n)
     {
-        return m;
+        n = m;
+        return n;
     }
 
     if (m->key <= n->key)
@@ -58,15 +60,16 @@ node *insertTreapNode(node *n, node *m)
             n = leftRotate(n);
         }
     }
-    return m;
+    return n;
 }
 
 node *createNode()
 {
     node *n = (node *)malloc(sizeof(node));
+
     n->key = rand() % 26 + 97;
-    n->value = rand() % RAND_MAX;
-    printf("key: %c value: %d\n", n->key, n->value);
+    n->value = rand() % 100;
+    //printf("key: %c value: %d\n", n->key, n->value);
     n->leftchild = NULL;
     n->rightchild = NULL;
     return n;
@@ -75,7 +78,7 @@ node *createNode()
 node *rightRotate(node *n)
 {
     node *x = n->leftchild;
-    node *y = n->rightchild;
+    node *y = x->rightchild;
     x->rightchild = n;
     n->leftchild = y;
     return x;
@@ -84,7 +87,7 @@ node *rightRotate(node *n)
 node *leftRotate(node *n)
 {
     node *y = n->rightchild;
-    node *x = n->leftchild;
+    node *x = y->leftchild;
     y->leftchild = n;
     n->rightchild = x;
     return y;
