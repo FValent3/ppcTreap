@@ -7,13 +7,13 @@ typedef struct Node
 {
     char key;
     int value;
-    struct Node *leftchild, *rigthchild;
+    struct Node *leftchild, *rightchild;
 } node;
 
 node *insertTreapNode(node *n, node *m);
 node *createNode();
 node *leftRotate(node *n);
-node *rigthRotate(node *n);
+node *rightRotate(node *n);
 void printNode(node *n);
 
 //Testing module
@@ -47,15 +47,15 @@ node *insertTreapNode(node *n, node *m)
 
         if (n->leftchild->value > n->value)
         {
-            n = rigthRotate(n);
+            n = rightRotate(n);
         }
     }
     else
     {
         printf("right\n");
-        n->rigthchild = insertTreapNode(n->rigthchild, m);
+        n->rightchild = insertTreapNode(n->rightchild, m);
 
-        if (n->rigthchild->value > n->value)
+        if (n->rightchild->value > n->value)
         {
             n = leftRotate(n);
         }
@@ -70,30 +70,30 @@ node *createNode()
     n->value = rand() % RAND_MAX;
     printf("key: %c value: %d\n", n->key, n->value);
     n->leftchild = NULL;
-    n->rigthchild = NULL;
+    n->rightchild = NULL;
     return n;
 }
 
-node *rigthRotate(node *n)
+node *rightRotate(node *n)
 {
     node *x = n->leftchild;
-    node *y = n->rigthchild;
-    x->rigthchild = n;
+    node *y = n->rightchild;
+    x->rightchild = n;
     n->leftchild = y;
     return x;
 }
 
 node *leftRotate(node *n)
 {
-    node *y = n->rigthchild;
+    node *y = n->rightchild;
     node *x = n->leftchild;
     y->leftchild = n;
-    n->rigthchild = x;
+    n->rightchild = x;
     return y;
 }
 
 void printNode(node *n)
 {
-    printf("key: %c\nvalue: %d\nleftchild: %s\nrigthchild: %s\n",
-           n->key, n->value, n->leftchild, n->rigthchild);
+    printf("key: %c\nvalue: %d\nleftchild: %s\nrightchild: %s\n",
+           n->key, n->value, n->leftchild, n->rightchild);
 }
