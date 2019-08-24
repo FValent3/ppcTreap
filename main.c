@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 
 typedef struct Node
 {
@@ -10,19 +11,21 @@ typedef struct Node
 } node;
 
 node *insertTreapNode(node *n, node *m);
-node *createNode(char key, int value);
+node *createNode();
 void printNode(node *n);
 
 //Testing module
 int main(int argc, char **argv)
 {
+    time_t t;
+    srand( (unsigned) time(&t));
+
     node *root = NULL;
-    node *n = createNode('a', 2);
-    node *m = createNode('c', 1);
+    node *n = createNode();
+    node *m = createNode();
     root = insertTreapNode(root, n);
     printNode(root);
     insertTreapNode(root, m);
-    printNode(root->rigthchild);
 
     return 0;
 }
@@ -47,11 +50,12 @@ node *insertTreapNode(node *n, node *m)
     return m;
 }
 
-node *createNode(char key, int value)
+node *createNode()
 {
     node *n = (node *)malloc(sizeof(node));
-    n->key = key;
-    n->value = value;
+    n->key = rand() % 26 + 97;
+    n->value = rand() % RAND_MAX;
+    printf("key: %c value: %d\n", n->key, n->value);
     n->leftchild = NULL;
     n->rigthchild = NULL;
     return n;
