@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <sys/time.h>
 
 typedef struct Node
@@ -20,7 +19,7 @@ void printTree(node *n);
 void printNode(node *n);
 node *insertion(node *n, node *m);
 //void *unionTree(node *n, node *m, node *b);
-node *intersection(node *n, node *m, node *b);
+node * intersection(node *n, node *m, node *b);
 
 //Testing module
 int main(int argc, char **argv)
@@ -28,23 +27,33 @@ int main(int argc, char **argv)
     time_t t;
     srand((unsigned)time(&t));
 
-    node *root = NULL;
-    //node *n = createNode();
-    node *n = createNode1('q', 10);
-    //node *m = createNode();
-    node *m = createNode1('h', 20);
+    node * root = NULL;
+    node *n = createNode();
+	//node *n = createNode1('q',10);
+    node *m = createNode();
+    //node *m = createNode1('h',20);
+    //node *j = createNode1('f',81);
+    node *j = createNode();
+    node *l = createNode();
     root = insertTreapNode(root, n);
     root = insertTreapNode(root, m);
+    root = insertTreapNode(root, j);
+    root = insertTreapNode(root, l);
     printTree(root);
     printf("\n");
 
     node *root2 = NULL;
-    //node *n2 = createNode();
-    node *n2 = createNode1('d', 50);
-    //node *m2 = createNode();
-    node *m2 = createNode1('q', 89);
+    node *n2 = createNode();
+    //node *n2 = createNode1('d', 50);
+    node *m2 = createNode();
+    //node *m2 = createNode1('q',89);
+    //node *j2 = createNode1('f',80);
+    node *j2 = createNode();
+    node *l2 = createNode();
     root2 = insertTreapNode(root2, n2);
     root2 = insertTreapNode(root2, m2);
+    root2 = insertTreapNode(root2, j2);
+    root2 = insertTreapNode(root2, l2);
     printTree(root2);
     printf("\n");
 
@@ -52,7 +61,7 @@ int main(int argc, char **argv)
     root3 = intersection(root, root2, root3);
     printTree(root3);
 
-    free(root);
+    free (root);
     return 0;
 }
 
@@ -92,7 +101,7 @@ node *createNode()
 
     n->key = rand() % 26 + 97;
     n->value = rand() % 100;
-    //printf("key: %c value: %ld\n", (char) n->key, n->value);
+    //printf("key: %c value: %d\n", n->key, n->value);
     n->leftchild = NULL;
     n->rightchild = NULL;
     return n;
@@ -103,7 +112,7 @@ node *createNode1(char n, int m)
     node *l = (node *)malloc(sizeof(node));
     l->key = n;
     l->value = m;
-    //printf("key: %c value: %ld\n", (char) l->key, l->value);
+    //printf("key: %c value: %d\n", n->key, n->value);
     l->leftchild = NULL;
     l->rightchild = NULL;
     return l;
@@ -129,35 +138,33 @@ node *leftRotate(node *n)
 
 node *insertion(node *n, node *m)
 {
-    if (n == NULL)
+    if(n == NULL)
         return m;
     if (n->key > m->key)
-        n->leftchild = insertion(n->leftchild, m);
+       n->leftchild = insertion(n->leftchild, m);
     else
-        n->rightchild = insertion(n->rightchild, m);
+       n->rightchild = insertion(n->rightchild, m);
     return n;
 }
 
 node *intersection(node *n, node *m, node *b)
 {
-    if (n == NULL || m == NULL)
-        return b;
-    if (n->key == m->key)
-    {
-        b = insertion(b, n);
-        //    printTree(b);
-        b = intersection(n->leftchild, m->leftchild, b);
-        b = intersection(n->rightchild, m->rightchild, b);
+    if(n == NULL || m == NULL) 
+		return b;
+    if(n->key == m->key) {
+    	node *j = createNode1(n->key, n->value);
+        b = insertTreapNode(b, j);
+        //printTree(b);
+    	b = intersection(n->leftchild, m->leftchild, b);
+    	b = intersection(n->rightchild, m->rightchild, b);
     }
-    else if (n->key > m->key)
-    {
-        b = intersection(n, m->rightchild, b);
-        b = intersection(n->leftchild, m, b);
+    else if(n->key > m->key) {
+    	b = intersection(n, m->rightchild, b);
+    	b = intersection(n->leftchild, m, b);
     }
-    else
-    {
-        b = intersection(n->rightchild, m, b);
-        b = intersection(n, m->leftchild, b);
+    else  {
+    	b = intersection(n->rightchild, m, b);
+    	b = intersection(n, m->leftchild, b);
     }
     return b;
 }
@@ -172,7 +179,7 @@ void printTree(node *n)
     else
     {
         i++;
-        printf("%c\n", (char)n->key);
+        printf("%c\n", n->key);
         printTree(n->leftchild);
         printTree(n->rightchild);
         i--;
@@ -181,5 +188,6 @@ void printTree(node *n)
 
 void printNode(node *n)
 {
-    printf("key: %c\nvalue: %ld\nleftchild: %p\nrightchild: %p\n", (char)n->key, n->value, n->leftchild, n->rightchild);
+    printf("key: %c\nvalue: %d\nleftchild: %s\nrightchild: %s\n",
+           n->key, n->value, n->leftchild, n->rightchild);
 }
