@@ -11,6 +11,17 @@ typedef struct Node
     struct Node *leftchild, *rightchild;
 } node;
 
+typedef struct Queue
+{
+	node *content;
+	struct Queue *next; 
+} queue;
+
+void insertInQueue(node *x, queue *h);
+node *removeOfQueue(queue *h);
+void *queueEmpty(queue *x);
+void condition(node *j, queue *h);
+node *difference(node *n, node *m, node *b);
 node *insertTreapNode(node *n, node *m);
 node *createNode();
 node *createNode1(char n, int m);
@@ -34,7 +45,7 @@ int main(int argc, char **argv)
     node *m = createNode();
     //node *m = createNode1('h',20);
     //node *j = createNode1('f',81);
-    node *j = createNode();
+	node *j = createNode();
     node *l = createNode();
     root = insertTreapNode(root, n);
     root = insertTreapNode(root, m);
@@ -43,7 +54,7 @@ int main(int argc, char **argv)
     printTree(root);
     printf("\n");
 
-    node *root2 = NULL;
+	node *root2 = NULL;
     node *n2 = createNode();
     //node *n2 = createNode1('d', 50);
     node *m2 = createNode();
@@ -59,11 +70,108 @@ int main(int argc, char **argv)
     printf("\n");
 
     node *root3 = NULL;
-    root3 = intersection(root, root2, root3);
+    //root3 = intersection(root, root2, root3);
+    root3 = difference(root, root2, root3);
     printTree(root3);
 
     free (root);
+    free (root2);
+    free (root3);
+    
     return 0;
+}
+
+void insertInQueue(node *x, queue *h)
+{
+	queue *p;
+	p = (queue *) malloc (sizeof (queue));
+	p->content = x;
+	p->next = NULL;
+	while(h->next != NULL) 
+		h = h->next;
+	h->next = p;
+}
+
+node *removeOfQueue(queue *h)
+{
+	queue *aux;
+	aux = h->next;
+	h->next = aux->next;
+	aux->next = NULL;
+	return aux->content;	
+}
+
+void *queueEmpty(queue *x)
+{
+	queue *j;
+	j = (queue*) malloc(sizeof(queue));
+	j->next = NULL;
+	x = j;
+}
+
+void condition(node *j, queue *h) 
+{
+	if (j->rightchild == NULL && j->leftchild != NULL)
+		insertInQueue(j->leftchild, h);
+	if (j->leftchild == NULL && j->rightchild != NULL)
+	    insertInQueue(j->rightchild, h);
+	if (j->leftchild != NULL && j->rightchild != NULL) {
+		insertInQueue(j->leftchild, h);
+		insertInQueue(j->rightchild, h);
+	}		
+}
+
+node *difference(node *n, node *m, node *b)
+{
+ 	queue *a1, *a2;
+    node *aux;
+    a1 = (queue *) malloc (sizeof (queue));
+	a1->next = NULL;
+    a2 = (queue *) malloc (sizeof (queue));
+	a2->next = NULL;
+    insertInQueue(n, a1);
+    while(1){
+        if(a1->next == NULL)
+            break;
+		aux = removeOfQueue(a1);
+        condition(aux, a1);
+        insertInQueue(m, a2);
+        while(1){
+            node *aux2;
+            aux2 = removeOfQueue(a2);
+            condition(aux2, a2);
+            if(aux->key == aux2->key)
+                break;
+            if(a2->next == NULL){
+				node *x = createNode1(aux->key, aux->value);
+                b = insertTreapNode(b, x);
+                break;
+			}    
+        }
+    }
+    queueEmpty(a1);
+    queueEmpty(a2);
+    insertInQueue(m, a2);
+    while(1){
+        if(a2->next == NULL)
+            break;
+		aux = removeOfQueue(a2);
+        condition(aux, a2);
+        insertInQueue(n, a1);
+        while(1){
+            node *aux2;
+            aux2 = removeOfQueue(a1);
+            condition(aux2, a1);
+            if(aux->key == aux2->key)
+                break;
+            if(a1->next == NULL){
+				node *x = createNode1(aux->key, aux->value);
+                b = insertTreapNode(b, x);
+                break;
+			}    
+        }
+    }
+    return b;   
 }
 
 node *insertTreapNode(node *n, node *m)
