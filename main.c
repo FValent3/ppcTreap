@@ -6,8 +6,8 @@
 
 typedef struct Node
 {
-    long int key;
-    long int value;
+    int key;
+    int value;
     struct Node *leftchild, *rightchild;
 } node;
 
@@ -193,7 +193,6 @@ node *difference(node *n, node *m, node *b)
 
 node *union_(node *n, node *m, node *r)
 {
-    node *j;
     node *k;
     node *aux;
     if (n == NULL)
@@ -232,7 +231,7 @@ node *insertTreapNode(node *n, node *m)
         n = m;
         return n;
     }
-    node *aux = createNode1(m->key, m->value);
+
     if (m->key <= n->key)
     {
 
@@ -343,7 +342,7 @@ void printTree(node *n)
     else
     {
         i++;
-        printf("%ld\n", n->key);
+        printf("%c\n", (char)n->key);
         printTree(n->leftchild);
         printTree(n->rightchild);
         i--;
@@ -352,6 +351,6 @@ void printTree(node *n)
 
 void printNode(node *n)
 {
-    printf("key: %ld\nvalue: %ld\nleftchild: %p\nrightchild: %p\n",
-           n->key, n->value, n->leftchild, n->rightchild);
+    printf("key: %d\nvalue: %d\nleftchild: %p\nrightchild: %p\n",
+           (char)n->key, n->value, n->leftchild, n->rightchild);
 }
