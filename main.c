@@ -13,15 +13,15 @@ typedef struct Node
 
 typedef struct Queue
 {
-	node *content;
-	struct Queue *next; 
+    node *content;
+    struct Queue *next;
 } queue;
 
+void swap(node **n, node **m);
 void insertInQueue(node *x, queue *h);
 node *removeOfQueue(queue *h);
-void *queueEmpty(queue *x);
+void queueEmpty(queue *x);
 void condition(node *j, queue *h);
-node *difference(node *n, node *m, node *b);
 node *insertTreapNode(node *n, node *m);
 node *createNode();
 node *createNode1(char n, int m);
@@ -31,7 +31,9 @@ void printTree(node *n);
 void printNode(node *n);
 node *insertion(node *n, node *m);
 //void *unionTree(node *n, node *m, node *b);
-node * intersection(node *n, node *m, node *b);
+node *intersection(node *n, node *m, node *b);
+node *difference(node *n, node *m, node *b);
+node *union_(node *n, node *m, node *r);
 
 //Testing module
 int main(int argc, char **argv)
@@ -39,139 +41,188 @@ int main(int argc, char **argv)
     time_t t;
     srand((unsigned)time(&t));
 
-    node * root = NULL;
-    node *n = createNode();
-	//node *n = createNode1('q',10);
-    node *m = createNode();
-    //node *m = createNode1('h',20);
-    //node *j = createNode1('f',81);
-	node *j = createNode();
-    node *l = createNode();
+    node *root = NULL;
+    //node *n = createNode();
+    node *n = createNode1('f', 10);
+    // node *m = createNode();
+    node *m = createNode1('h', 20);
+    node *j = createNode1('q', 81);
+    // node *j = createNode();
+    // node *l = createNode();
     root = insertTreapNode(root, n);
     root = insertTreapNode(root, m);
     root = insertTreapNode(root, j);
-    root = insertTreapNode(root, l);
+    //root = insertTreapNode(root, l);
     printTree(root);
     printf("\n");
 
-	node *root2 = NULL;
-    node *n2 = createNode();
-    //node *n2 = createNode1('d', 50);
-    node *m2 = createNode();
-    //node *m2 = createNode1('q',89);
-    //node *j2 = createNode1('f',80);
-    node *j2 = createNode();
-    node *l2 = createNode();
+    node *root2 = NULL;
+    //node *n2 = createNode();
+    node *n2 = createNode1('d', 50);
+    //node *m2 = createNode();
+    node *m2 = createNode1('f', 89);
+    node *j2 = createNode1('q', 80);
+    //node *j2 = createNode();
+    // node *l2 = createNode();
     root2 = insertTreapNode(root2, n2);
     root2 = insertTreapNode(root2, m2);
     root2 = insertTreapNode(root2, j2);
-    root2 = insertTreapNode(root2, l2);
+    //root2 = insertTreapNode(root2, l2);
     printTree(root2);
     printf("\n");
 
     node *root3 = NULL;
     //root3 = intersection(root, root2, root3);
-    root3 = difference(root, root2, root3);
+    root3 = union_(root, root2, root3);
     printTree(root3);
+    free(root);
+    free(root2);
+    free(root3);
 
-    free (root);
-    free (root2);
-    free (root3);
-    
     return 0;
+}
+
+void swap(node **n, node **m)
+{
+    node *aux = (node *)malloc(sizeof(node));
+
+    aux = *m;
+    *m = *n;
+    *n = aux;
 }
 
 void insertInQueue(node *x, queue *h)
 {
-	queue *p;
-	p = (queue *) malloc (sizeof (queue));
-	p->content = x;
-	p->next = NULL;
-	while(h->next != NULL) 
-		h = h->next;
-	h->next = p;
+    queue *p;
+    p = (queue *)malloc(sizeof(queue));
+    p->content = x;
+    p->next = NULL;
+    while (h->next != NULL)
+        h = h->next;
+    h->next = p;
 }
 
 node *removeOfQueue(queue *h)
 {
-	queue *aux;
-	aux = h->next;
-	h->next = aux->next;
-	aux->next = NULL;
-	return aux->content;	
+    queue *aux;
+    aux = h->next;
+    h->next = aux->next;
+    aux->next = NULL;
+    return aux->content;
 }
 
-void *queueEmpty(queue *x)
+void queueEmpty(queue *x)
 {
-	queue *j;
-	j = (queue*) malloc(sizeof(queue));
-	j->next = NULL;
-	x = j;
+    queue *j;
+    j = (queue *)malloc(sizeof(queue));
+    j->next = NULL;
+    x = j;
 }
 
-void condition(node *j, queue *h) 
+void condition(node *j, queue *h)
 {
-	if (j->rightchild == NULL && j->leftchild != NULL)
-		insertInQueue(j->leftchild, h);
-	if (j->leftchild == NULL && j->rightchild != NULL)
-	    insertInQueue(j->rightchild, h);
-	if (j->leftchild != NULL && j->rightchild != NULL) {
-		insertInQueue(j->leftchild, h);
-		insertInQueue(j->rightchild, h);
-	}		
+    if (j->rightchild == NULL && j->leftchild != NULL)
+        insertInQueue(j->leftchild, h);
+    if (j->leftchild == NULL && j->rightchild != NULL)
+        insertInQueue(j->rightchild, h);
+    if (j->leftchild != NULL && j->rightchild != NULL)
+    {
+        insertInQueue(j->leftchild, h);
+        insertInQueue(j->rightchild, h);
+    }
 }
 
 node *difference(node *n, node *m, node *b)
 {
- 	queue *a1, *a2;
+    queue *a1, *a2;
     node *aux;
-    a1 = (queue *) malloc (sizeof (queue));
-	a1->next = NULL;
-    a2 = (queue *) malloc (sizeof (queue));
-	a2->next = NULL;
+    a1 = (queue *)malloc(sizeof(queue));
+    a1->next = NULL;
+    a2 = (queue *)malloc(sizeof(queue));
+    a2->next = NULL;
     insertInQueue(n, a1);
-    while(1){
-        if(a1->next == NULL)
+    while (1)
+    {
+        if (a1->next == NULL)
             break;
-		aux = removeOfQueue(a1);
+        aux = removeOfQueue(a1);
         condition(aux, a1);
         insertInQueue(m, a2);
-        while(1){
+        while (1)
+        {
             node *aux2;
             aux2 = removeOfQueue(a2);
             condition(aux2, a2);
-            if(aux->key == aux2->key)
+            if (aux->key == aux2->key)
                 break;
-            if(a2->next == NULL){
-				node *x = createNode1(aux->key, aux->value);
+            if (a2->next == NULL)
+            {
+                node *x = createNode1(aux->key, aux->value);
                 b = insertTreapNode(b, x);
                 break;
-			}    
+            }
         }
     }
     queueEmpty(a1);
     queueEmpty(a2);
     insertInQueue(m, a2);
-    while(1){
-        if(a2->next == NULL)
+    while (1)
+    {
+        if (a2->next == NULL)
             break;
-		aux = removeOfQueue(a2);
+        aux = removeOfQueue(a2);
         condition(aux, a2);
         insertInQueue(n, a1);
-        while(1){
+        while (1)
+        {
             node *aux2;
             aux2 = removeOfQueue(a1);
             condition(aux2, a1);
-            if(aux->key == aux2->key)
+            if (aux->key == aux2->key)
                 break;
-            if(a1->next == NULL){
-				node *x = createNode1(aux->key, aux->value);
+            if (a1->next == NULL)
+            {
+                node *x = createNode1(aux->key, aux->value);
                 b = insertTreapNode(b, x);
                 break;
-			}    
+            }
         }
     }
-    return b;   
+    return b;
+}
+
+node *union_(node *n, node *m, node *r)
+{
+    node *j;
+    node *k;
+    node *aux;
+    if (n == NULL)
+        return m;
+    if (m == NULL)
+        return n;
+    if (n->value < m->value)
+    {
+        swap(&n, &m);
+    }
+
+    if (m->key != n->key)
+    {
+
+        k = createNode1(n->key, n->value);
+
+        aux = insertTreapNode(m, k);
+    }
+    else
+    {
+
+        aux = m;
+    }
+
+    r = createNode1(n->key, n->value);
+    r->leftchild = union_(n->leftchild, aux->leftchild, r);
+    r->rightchild = union_(n->rightchild, aux->rightchild, r);
+
+    return r;
 }
 
 node *insertTreapNode(node *n, node *m)
@@ -181,7 +232,7 @@ node *insertTreapNode(node *n, node *m)
         n = m;
         return n;
     }
-
+    node *aux = createNode1(m->key, m->value);
     if (m->key <= n->key)
     {
 
@@ -201,6 +252,7 @@ node *insertTreapNode(node *n, node *m)
             n = leftRotate(n);
         }
     }
+
     return n;
 }
 
@@ -247,33 +299,36 @@ node *leftRotate(node *n)
 
 node *insertion(node *n, node *m)
 {
-    if(n == NULL)
+    if (n == NULL)
         return m;
     if (n->key > m->key)
-       n->leftchild = insertion(n->leftchild, m);
+        n->leftchild = insertion(n->leftchild, m);
     else
-       n->rightchild = insertion(n->rightchild, m);
+        n->rightchild = insertion(n->rightchild, m);
     return n;
 }
 
 node *intersection(node *n, node *m, node *b)
 {
-    if(n == NULL || m == NULL) 
-		return b;
-    if(n->key == m->key) {
-    	node *j = createNode1(n->key, n->value);
+    if (n == NULL || m == NULL)
+        return b;
+    if (n->key == m->key)
+    {
+        node *j = createNode1(n->key, n->value);
         b = insertTreapNode(b, j);
         //printTree(b);
-    	b = intersection(n->leftchild, m->leftchild, b);
-    	b = intersection(n->rightchild, m->rightchild, b);
+        b = intersection(n->leftchild, m->leftchild, b);
+        b = intersection(n->rightchild, m->rightchild, b);
     }
-    else if(n->key > m->key) {
-    	b = intersection(n, m->rightchild, b);
-    	b = intersection(n->leftchild, m, b);
+    else if (n->key > m->key)
+    {
+        b = intersection(n, m->rightchild, b);
+        b = intersection(n->leftchild, m, b);
     }
-    else  {
-    	b = intersection(n->rightchild, m, b);
-    	b = intersection(n, m->leftchild, b);
+    else
+    {
+        b = intersection(n->rightchild, m, b);
+        b = intersection(n, m->leftchild, b);
     }
     return b;
 }
@@ -288,7 +343,7 @@ void printTree(node *n)
     else
     {
         i++;
-        printf("%c\n", n->key);
+        printf("%ld\n", n->key);
         printTree(n->leftchild);
         printTree(n->rightchild);
         i--;
@@ -297,6 +352,6 @@ void printTree(node *n)
 
 void printNode(node *n)
 {
-    printf("key: %c\nvalue: %d\nleftchild: %s\nrightchild: %s\n",
+    printf("key: %ld\nvalue: %ld\nleftchild: %p\nrightchild: %p\n",
            n->key, n->value, n->leftchild, n->rightchild);
 }
